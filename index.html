@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Mafer 🌼</title>
+
+<!-- ============================================================
+     ✏️  ZONA DE EDICIÓN RÁPIDA
+     Todo lo que normalmente querrías cambiar está aquí arriba,
+     en variables de JavaScript y en el bloque de texto HTML
+     marcado más abajo como "TEXTOS EDITABLES". No necesitas tocar
+     el resto del código si no quieres.
+============================================================ -->
+<style>
+  :root{
+    /* Colores principales — cámbialos si quieres otra paleta */
+    --amarillo-petalo: #ffd23f;
+    --amarillo-petalo-2: #ffb703;
+    --centro-flor: #7a4b12;
+    --verde-tallo: #4a7c3a;
+    --verde-tallo-oscuro: #2f5223;
+    --fondo-1: #2b1055;
+    --fondo-2: #7597de;
+    --fondo-3: #ffd9a0;
+    --texto-claro: #fffdf7;
+    --acento: #ff6f91;
+  }
+
+  *{
+    box-sizing: border-box;
+  }
+
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow-x:hidden;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(160deg, var(--fondo-1) 0%, var(--fondo-2) 55%, var(--fondo-3) 100%);
+    color: var(--texto-claro);
+  }
+
+  .escena{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding: 40px 16px 80px;
+    text-align:center;
+    overflow:hidden;
+  }
+
+  /* --- Estrellas de fondo --- */
+  .estrella{
+    position:absolute;
+    background:#fff;
+    border-radius:50%;
+    opacity:0.7;
+    animation: parpadeo 3s ease-in-out infinite;
+  }
+  @keyframes parpadeo{
+    0%,100%{ opacity:0.2; }
+    50%{ opacity:0.9; }
+  }
+
+  /* --- Título --- */
+  .titulo{
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin: 10px 0 4px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    letter-spacing: 1px;
+    z-index:2;
+  }
+  .subtitulo{
+    font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+    opacity:0.9;
+    margin-bottom: 30px;
+    z-index:2;
+    max-width: 560px;
+  }
+  .fecha{
+    color: var(--acento);
+    font-weight:600;
+  }
+
+  /* --- Contenedor del ramo --- */
+  .ramo-wrap{
+    position:relative;
+    width: min(90vw, 480px);
+    height: 420px;
+    z-index:2;
+    margin-top: 10px;
+  }
+
+  /* Listón */
+  .liston{
+    position:absolute;
+    bottom: 28px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 46px;
+    z-index:1;
+  }
+  .liston::before, .liston::after{
+    content:"";
+    position:absolute;
+    width: 46px;
+    height: 30px;
+    background: var(--acento);
+    top:0;
+    border-radius: 0 0 6px 6px;
+  }
+  .liston::before{
+    left:0;
+    transform: rotate(18deg);
+    transform-origin: top right;
+  }
+  .liston::after{
+    right:0;
+    transform: rotate(-18deg);
+    transform-origin: top left;
+  }
+  .liston-nudo{
+    position:absolute;
+    bottom: 40px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 22px;
+    background: var(--acento);
+    border-radius: 50%;
+    z-index:2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  }
+
+  /* Cada flor */
+  .flor{
+    position:absolute;
+    bottom: 40px;
+    width: 0;
+    height: 0;
+    transform-origin: bottom center;
+    cursor:pointer;
+  }
+
+  .tallo{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    width: 6px;
+    height: 230px;
+    background: linear-gradient(to bottom, var(--verde-tallo), var(--verde-tallo-oscuro));
+    transform: translateX(-50%);
+    border-radius: 6px;
+    transform-origin: bottom center;
+    animation: balanceo 4.5s ease-in-out infinite;
+  }
+
+  .hoja{
+    position:absolute;
+    width: 34px;
+    height: 16px;
+    background: var(--verde-tallo);
+    border-radius: 0 100% 0 100%;
+  }
+
+  .cabeza-flor{
+    position:absolute;
+    bottom: 225px;
+    left:50%;
+    width: 70px;
+    height: 70px;
+    transform: translate(-50%, 0) scale(0);
+    animation: florecer 1.2s ease-out forwards, balanceo 4.5s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+
+  .petalo{
+    position:absolute;
+    width: 26px;
+    height: 40px;
+    left:50%;
+    top:50%;
+    background: radial-gradient(circle at 50% 85%, var(--amarillo-petalo-2), var(--amarillo-petalo));
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    transform-origin: 50% 100%;
+    box-shadow: 0 0 6px rgba(255,178,3,0.35);
+  }
+
+  .centro{
+    position:absolute;
+    width: 24px;
+    height: 24px;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    background: radial-gradient(circle, #a9711d, var(--centro-flor));
+    border-radius: 50%;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.4);
+  }
+
+  @keyframes balanceo{
+    0%,100%{ transform: translateX(-50%) rotate(-2.5deg); }
+    50%{ transform: translateX(-50%) rotate(2.5deg); }
+  }
+  .cabeza-flor{
+    animation-name: florecer, balanceoCabeza;
+  }
+  @keyframes balanceoCabeza{
+    0%,100%{ transform: translate(-50%,0) rotate(-3deg); }
+    50%{ transform: translate(-50%,0) rotate(3deg); }
+  }
+  @keyframes florecer{
+    from{ transform: translate(-50%,0) scale(0) rotate(-8deg); opacity:0; }
+    to{ transform: translate(-50%,0) scale(1) rotate(0deg); opacity:1; }
+  }
+
+  .flor:hover .cabeza-flor,
+  .flor.tocada .cabeza-flor{
+    animation-play-state: running;
+    filter: drop-shadow(0 0 10px rgba(255,210,63,0.8));
+  }
+
+  /* Pétalos que caen al tocar una flor */
+  .petalo-cayendo{
+    position:fixed;
+    width: 10px;
+    height: 16px;
+    background: var(--amarillo-petalo);
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    pointer-events:none;
+    z-index: 50;
+    animation: caer linear forwards;
+  }
+  @keyframes caer{
+    to{
+      transform: translateY(60vh) translateX(var(--desvio, 0px)) rotate(var(--giro, 360deg));
+      opacity: 0;
+    }
+  }
+
+  /* --- Botón y mensaje --- */
+  .btn-mensaje{
+    z-index:2;
+    margin-top: 26px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    background: var(--acento);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor:pointer;
+    box-shadow: 0 6px 18px rgba(255,111,145,0.45);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-mensaje:hover{
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 10px 22px rgba(255,111,145,0.55);
+  }
+
+  .tarjeta{
+    z-index:2;
+    max-width: 480px;
+    margin-top: 26px;
+    padding: 26px 28px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 18px;
+    backdrop-filter: blur(6px);
+    display:none;
+    animation: aparecer .6s ease forwards;
+  }
+  .tarjeta.visible{ display:block; }
+  @keyframes aparecer{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  .tarjeta p{
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+    font-style: italic;
+  }
+  .firma{
+    display:block;
+    margin-top: 14px;
+    font-style: normal;
+    font-weight:600;
+    color: var(--acento);
+  }
+
+  .pista{
+    margin-top: 14px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    z-index:2;
+  }
+
+  /* --- Overlay y tarjeta de "momento" al tocar una flor --- */
+  .overlay-momento{
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 8, 45, 0.55);
+    backdrop-filter: blur(3px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  .overlay-momento.visible{
+    display: flex;
+    opacity: 1;
+  }
+
+  .tarjeta-momento{
+    position: relative;
+    max-width: 420px;
+    width: 100%;
+    background: linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255, 217, 63, 0.55);
+    border-radius: 22px;
+    padding: 30px 26px 26px;
+    text-align: left;
+    color: var(--texto-claro);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.45), 0 0 30px rgba(255,178,3,0.15);
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+    animation: aparecerMomento .45s cubic-bezier(.2,.9,.3,1.3) forwards;
+  }
+  @keyframes aparecerMomento{
+    to{ transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .tarjeta-momento::before{
+    content:"🌼";
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size: 1.6rem;
+    background: var(--fondo-1);
+    border: 1px solid rgba(255, 217, 63, 0.55);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .momento-numero{
+    display:inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--amarillo-petalo);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .momento-titulo{
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 1.25rem;
+    margin: 0 0 12px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+
+  .momento-texto{
+    font-size: 0.98rem;
+    line-height: 1.65;
+    margin: 0;
+    font-style: italic;
+    opacity: 0.95;
+  }
+
+  .cerrar-momento{
+    position:absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--texto-claro);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .cerrar-momento:hover{
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  @media (max-width: 420px){
+    .tarjeta-momento{ padding: 26px 20px 22px; }
+  }
+
+  @media (max-width: 420px){
+    .ramo-wrap{ height: 360px; }
+    .cabeza-flor{ bottom: 190px; width: 58px; height:58px; }
+    .tallo{ height: 195px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="escena" id="escena">
+
+  <h1 class="titulo">Para ti, Mafer 🌼</h1>
+  <p class="subtitulo">
+    Un ramo hecho de código, para celebrar
+    <span class="fecha">nuestro 21 de septiembre</span>.
+    Haz clic en cada flor: cada una guarda un momento bonito de nuestra historia.
+  </p>
+
+  <div class="ramo-wrap" id="ramo-wrap">
+    <div class="liston-nudo"></div>
+    <div class="liston"></div>
+    <!-- Las flores se generan automáticamente con JavaScript,
+         mira la sección CONFIG más abajo para agregar o quitar -->
+  </div>
+
+  <button class="btn-mensaje" id="btnMensaje">Presiona aquí, Mafer 💛</button>
+
+  <!-- ============ TEXTOS EDITABLES ============
+       Cambia el mensaje, la firma o el nombre libremente aquí abajo. -->
+  <div class="tarjeta" id="tarjeta">
+    <p id="textoMensaje">
+      Cada pétalo de este ramo lo escribí pensando en ti. No es el más grande,
+      ni el más caro, pero es único, como tú. Feliz 21 de septiembre, mi amor.
+      Que este pequeño detalle te recuerde cuánto significas para mí, hoy y siempre.
+    </p>
+    <span class="firma" id="firma">Con todo mi cariño 💛</span>
+  </div>
+  <!-- ============ FIN TEXTOS EDITABLES ============ -->
+
+  <p class="pista">psst… toca cada flor, cada una guarda un recuerdo nuestro 🌼</p>
+</div>
+
+<!-- Overlay que muestra el "momento" al tocar una flor -->
+<div class="overlay-momento" id="overlayMomento">
+  <div class="tarjeta-momento" id="tarjetaMomento">
+    <button class="cerrar-momento" id="cerrarMomento" aria-label="Cerrar">✕</button>
+    <span class="momento-numero" id="momentoNumero">Momento 1</span>
+    <h3 class="momento-titulo" id="momentoTitulo"></h3>
+    <p class="momento-texto" id="momentoTexto"></p>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ⚙️  CONFIG — edita estos valores para personalizar el ramo
+   ============================================================ */
+const CONFIG = {
+  numeroDeFlores: 5,      // cuántas flores tendrá el ramo
+  anguloMax: 26,          // separación máxima entre flores (grados)
+  altoDiferencia: 22,     // diferencia de altura entre flores centrales y laterales (px)
+  coloresPetalo: ["#ffd23f", "#ffc93c", "#ffb703"], // variaciones de amarillo
+};
+
+const ramoWrap = document.getElementById('ramo-wrap');
+
+/* ============================================================
+   💛  MOMENTOS — uno por cada flor (edítalos si quieres)
+   ============================================================ */
+const MOMENTOS = [
+  {
+    titulo: "El día que todo empezó",
+    texto: "Nos conocimos de manera virtual, sin planearlo. Respondí una historia tuya de Blackpink y, sin darnos cuenta, esa pequeña conversación se convirtió en algo que fluyó tan natural y bonito que terminamos enamorándonos, a la distancia, un mensaje a la vez."
+  },
+  {
+    titulo: "Cuando decidí cruzar el mapa por ti",
+    texto: "Viajé de Lima a Tacna solo para verte y conocerte en persona. Todavía recuerdo esa noche: fue tan bonita y especial que confirmó que lo que sentíamos era real, y que valía la pena cada kilómetro recorrido."
+  },
+  {
+    titulo: "Nuestra primera cita en Lima",
+    texto: "Cuando te mudaste a Lima, nos encontramos por primera vez en una cita en el Mall Plaza Lima Sur, cerca de tu casa. Caminar juntos por ahí, ya sin pantallas de por medio, fue un encuentro precioso que se quedó grabado en mi memoria."
+  },
+  {
+    titulo: "Un día entero solo para nosotros",
+    texto: "Tus papás salieron de viaje y yo llegué a tu casa a pasar el día contigo. Almorzamos Popeyes, hicimos la tarea de tu hermano entre risas, y compartimos momentos íntimos y bonitos que hicieron de ese día uno de los que más atesoro."
+  },
+  {
+    titulo: "El cumpleaños que compartimos",
+    texto: "Viajaste desde Chorrillos hasta San Juan de Lurigancho para estar conmigo. Te recogí y juntos tomamos el tren hasta mi casa. Ese día conociste a mis padres, cantamos cumpleaños y compartimos la torta juntos: uno de los regalos más lindos que me ha dado la vida."
+  }
+];
+
+function crearFlor(indice, total){
+  const centro = (total - 1) / 2;
+  const offset = indice - centro;                     // -2,-1,0,1,2 ...
+  const angulo = offset * (CONFIG.anguloMax / centro || 0);
+  const desplazX = offset * 46;                        // separación horizontal
+  const alturaExtra = Math.abs(offset) * CONFIG.altoDiferencia;
+
+  const flor = document.createElement('div');
+  flor.className = 'flor';
+  flor.style.left = `calc(50% + ${desplazX}px)`;
+  flor.style.transform = `translateX(-50%) rotate(${angulo}deg)`;
+  flor.style.bottom = `${40 - alturaExtra}px`;
+
+  const tallo = document.createElement('div');
+  tallo.className = 'tallo';
+  tallo.style.animationDelay = `${indice * 0.15}s`;
+
+  // hojas a media altura del tallo
+  const hoja1 = document.createElement('div');
+  hoja1.className = 'hoja';
+  hoja1.style.bottom = '90px';
+  hoja1.style.left = '-26px';
+  hoja1.style.transform = 'rotate(20deg)';
+
+  const hoja2 = document.createElement('div');
+  hoja2.className = 'hoja';
+  hoja2.style.bottom = '130px';
+  hoja2.style.right = '-26px';
+  hoja2.style.transform = 'rotate(-20deg) scaleX(-1)';
+
+  tallo.appendChild(hoja1);
+  tallo.appendChild(hoja2);
+
+  const cabeza = document.createElement('div');
+  cabeza.className = 'cabeza-flor';
+  cabeza.style.animationDelay = `${0.3 + indice * 0.18}s, ${indice * 0.15}s`;
+
+  const colorElegido = CONFIG.coloresPetalo[indice % CONFIG.coloresPetalo.length];
+
+  const numPetalos = 8;
+  for(let p = 0; p < numPetalos; p++){
+    const petalo = document.createElement('div');
+    petalo.className = 'petalo';
+    const rot = (360 / numPetalos) * p;
+    petalo.style.transform = `translate(-50%,-100%) rotate(${rot}deg)`;
+    petalo.style.background = `radial-gradient(circle at 50% 85%, ${colorElegido}, var(--amarillo-petalo))`;
+    cabeza.appendChild(petalo);
+  }
+
+  const centroFlor = document.createElement('div');
+  centroFlor.className = 'centro';
+  cabeza.appendChild(centroFlor);
+
+  flor.appendChild(tallo);
+  flor.appendChild(cabeza);
+
+  // Interacción: al tocar la flor, brilla, sueltan pétalos y se revela el momento
+  flor.addEventListener('click', (e) => {
+    flor.classList.add('tocada');
+    soltarPetalos(e.clientX, e.clientY, colorElegido);
+    setTimeout(() => flor.classList.remove('tocada'), 800);
+    mostrarMomento(indice);
+  });
+
+  return flor;
+}
+
+for(let i = 0; i < CONFIG.numeroDeFlores; i++){
+  ramoWrap.appendChild(crearFlor(i, CONFIG.numeroDeFlores));
+}
+
+/* --- Mostrar / ocultar la tarjeta de "momento" --- */
+const overlayMomento = document.getElementById('overlayMomento');
+const momentoNumero = document.getElementById('momentoNumero');
+const momentoTitulo = document.getElementById('momentoTitulo');
+const momentoTexto = document.getElementById('momentoTexto');
+const cerrarMomento = document.getElementById('cerrarMomento');
+
+function mostrarMomento(indice){
+  const momento = MOMENTOS[indice % MOMENTOS.length];
+  momentoNumero.textContent = `Momento ${indice + 1}`;
+  momentoTitulo.textContent = momento.titulo;
+  momentoTexto.textContent = momento.texto;
+  overlayMomento.classList.add('visible');
+}
+
+function ocultarMomento(){
+  overlayMomento.classList.remove('visible');
+}
+
+cerrarMomento.addEventListener('click', ocultarMomento);
+overlayMomento.addEventListener('click', (e) => {
+  if(e.target === overlayMomento) ocultarMomento();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') ocultarMomento();
+});
+
+/* --- Pétalos cayendo al hacer click en una flor --- */
+function soltarPetalos(x, y, color){
+  const cantidad = 10;
+  for(let i = 0; i < cantidad; i++){
+    const p = document.createElement('div');
+    p.className = 'petalo-cayendo';
+    p.style.left = `${x + (Math.random()*40 - 20)}px`;
+    p.style.top = `${y}px`;
+    p.style.background = color;
+    p.style.setProperty('--desvio', `${Math.random()*140 - 70}px`);
+    p.style.setProperty('--giro', `${Math.random()*720 - 360}deg`);
+    p.style.animationDuration = `${1 + Math.random()}s`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2200);
+  }
+}
+
+/* --- Estrellas de fondo generadas aleatoriamente --- */
+const escena = document.getElementById('escena');
+for(let i = 0; i < 40; i++){
+  const estrella = document.createElement('div');
+  estrella.className = 'estrella';
+  const tam = Math.random() * 2 + 1;
+  estrella.style.width = `${tam}px`;
+  estrella.style.height = `${tam}px`;
+  estrella.style.left = `${Math.random() * 100}%`;
+  estrella.style.top = `${Math.random() * 55}%`;
+  estrella.style.animationDelay = `${Math.random() * 3}s`;
+  escena.appendChild(estrella);
+}
+
+/* --- Mostrar mensaje --- */
+const btnMensaje = document.getElementById('btnMensaje');
+const tarjeta = document.getElementById('tarjeta');
+btnMensaje.addEventListener('click', () => {
+  const yaVisible = tarjeta.classList.contains('visible');
+  if(yaVisible){
+    tarjeta.classList.remove('visible');
+    btnMensaje.textContent = 'Presiona aquí, Mafer 💛';
+  } else {
+    tarjeta.classList.add('visible');
+    btnMensaje.textContent = 'Ocultar mensaje';
+    tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+</script>
+
+</body>
+</html>
